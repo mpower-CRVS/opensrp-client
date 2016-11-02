@@ -78,6 +78,27 @@ public class ChildDetailActivity extends Activity {
         TextView mother_name_bengali = (TextView) findViewById(R.id.mother_name_bengali);
         TextView mother_dob = (TextView) findViewById(R.id.mother_dob);
         TextView mother_nid = (TextView) findViewById(R.id.mother_nid);
+        final ImageView childpic = (ImageView)findViewById(R.id.householdprofileview);
+        childpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent(childpic);
+            }
+        });
+        if ((ChildClient.getDetails().get("gender") != null ? ChildClient.getDetails().get("gender") : "").equalsIgnoreCase("Female")) {
+            childpic.setImageResource(R.drawable.child_girl_infant);
+//                newborn_or_fp.setText("Family Planning");
+        } else {
+            childpic.setImageResource(R.drawable.child_boy_infant);
+//                newborn_or_fp.setVisibility(View.INVISIBLE);
+        }
+        try {
+            if (ChildClient.getDetails().get("profilepic") != null) {
+                ChildDetailActivity.setImagetoHolder(this, ChildClient.getDetails().get("profilepic"), childpic, R.drawable.child_boy_infant);
+            }
+        }catch (Exception e){
+
+        }
 
 
 

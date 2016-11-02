@@ -115,7 +115,10 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
             public DialogOption[] filterOptions() {
                 ArrayList<DialogOption> dialogOptionslist = new ArrayList<DialogOption>();
                 dialogOptionslist.add(new CursorCommonObjectFilterOption(getString(R.string.filter_by_all_label),""));
-                dialogOptionslist.add(new CursorCommonObjectFilterOption(getString(R.string.filter_by_encc3),filterStringForENCCRV3()));
+//                dialogOptionslist.add(new CursorCommonObjectFilterOption(getString(R.string.filter_by_encc3),filterStringForENCCRV3()));
+                dialogOptionslist.add(new CursorCommonObjectFilterOption(getString(R.string.filter_by_all_male),filterStringForMale()));
+                dialogOptionslist.add(new CursorCommonObjectFilterOption(getString(R.string.filter_by_all_female),filterStringForFemale()));
+                dialogOptionslist.add(new CursorCommonObjectFilterOption(getString(R.string.filter_by_all_Other),filterStringForOther()));
 
                 String locationjson = context.anmLocationController().get();
                 LocationTree locationTree = EntityUtils.fromJson(locationjson, LocationTree.class);
@@ -140,7 +143,7 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
             public DialogOption[] sortingOptions() {
                 return new DialogOption[]{
 //                        new ElcoPSRFDueDateSort(),
-                        new CursorCommonObjectSort(getString(R.string.due_status),sortByAlertmethod()),
+                        new CursorCommonObjectSort(getString(R.string.child_dob),sortBychild_dob()),
                         new CursorCommonObjectSort(Context.getInstance().applicationContext().getString(R.string.elco_alphabetical_sort),sortByChildName()),
                         new CursorCommonObjectSort(Context.getInstance().applicationContext().getString(R.string.child_details_fathers_name_label),sortByfather_name()),
                         new CursorCommonObjectSort( Context.getInstance().applicationContext().getString(R.string.child_details_mothers_name_label),sortBymother_name()),
@@ -155,6 +158,17 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
             }
         };
     }
+
+    private String filterStringForFemale() {
+        return "and gender LIKE '%Female%'";
+    }
+    private String filterStringForMale() {
+        return "and gender LIKE '%Male%'";
+    }
+    private String filterStringForOther() {
+        return "and gender LIKE '%Transgender%'";
+    }
+
 
     @Override
     protected SmartRegisterClientsProvider clientsProvider() {
@@ -283,7 +297,7 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
                         if(cs.toString().equalsIgnoreCase("")){
                             filters = "";
                         }else {
-                            filters = "and FWWOMFNAME Like '%" + cs.toString() + "%' or GOBHHID Like '%" + cs.toString() + "%'  or JiVitAHHID Like '%" + cs.toString() + "%' ";
+                            filters = "and name_Fname Like '%" + cs.toString() + "%' or mother_name_english Like '%" + cs.toString() + "%'  or father_name_english Like '%" + cs.toString() + "%' ";
                         }
                         return null;
                     }
@@ -322,7 +336,7 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
             }else{
                 StringUtil.humanize(entry.getValue().getLabel());
                 String name = StringUtil.humanize(entry.getValue().getLabel());
-                dialogOptionslist.add(new CursorCommonObjectFilterOption(name,"and mcaremother.details like '%"+name +"%'"));
+                dialogOptionslist.add(new CursorCommonObjectFilterOption(name,"and crvschild.details like '%"+name +"%'"));
 
             }
         }
@@ -387,11 +401,11 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
     }
     public String childMainSelectWithJoins(){
         return "Select crvschild.id as _id,crvschild.relationalid,crvschild.details,crvschild.name_Fname,crvschild.mother_name_english,crvschild.father_name_english,crvschild.child_dob \n" +
-                "from crvschild\n";
+                "from crvschild\n"+" Left Join alerts on alerts.caseID = crvschild.id";
     }
     public String childMainCountWithJoins() {
         return "Select Count(*) \n" +
-                "from crvschild";
+                "from crvschild"+" Left Join alerts on alerts.caseID = crvschild.id" ;
     }
 
     private String sortByChildName(){

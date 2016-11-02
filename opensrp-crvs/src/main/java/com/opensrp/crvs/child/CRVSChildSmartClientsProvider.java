@@ -1,5 +1,6 @@
 package com.opensrp.crvs.child;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -69,7 +70,7 @@ public class CRVSChildSmartClientsProvider implements SmartRegisterCLientsProvid
 
         LinearLayout profileinfolayout = (LinearLayout)itemView.findViewById(R.id.profile_info_layout);
 
-//        ImageView profilepic = (ImageView)itemView.findViewById(R.id.profilepic);
+        ImageView profilepic = (ImageView)itemView.findViewById(R.id.profilepic);
         TextView mothername = (TextView)itemView.findViewById(R.id.mother_name);
         TextView fathername = (TextView)itemView.findViewById(R.id.father_name);
         TextView name = (TextView)itemView.findViewById(R.id.name);
@@ -101,6 +102,20 @@ public class CRVSChildSmartClientsProvider implements SmartRegisterCLientsProvid
             nid.setVisibility(View.VISIBLE);
         }else{
             nid.setVisibility(View.GONE);
+        }
+        if ((pc.getDetails().get("gender") != null ? pc.getDetails().get("gender") : "").equalsIgnoreCase("Female")) {
+            profilepic.setImageResource(R.drawable.child_girl_infant);
+//                newborn_or_fp.setText("Family Planning");
+        } else {
+            profilepic.setImageResource(R.drawable.child_boy_infant);
+//                newborn_or_fp.setVisibility(View.INVISIBLE);
+        }
+        try {
+            if (pc.getDetails().get("profilepic") != null) {
+                ChildDetailActivity.setImagetoHolder((Activity) context, pc.getDetails().get("profilepic"), profilepic, R.drawable.child_boy_infant);
+            }
+        }catch (Exception e){
+
         }
 
 

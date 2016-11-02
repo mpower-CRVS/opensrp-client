@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.opensrp.crvs.R;
 
@@ -34,6 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+import util.ImageCache;
+import util.ImageFetcher;
 
 import static org.ei.opensrp.util.StringUtil.humanize;
 
@@ -82,6 +86,8 @@ public class ChildDetailActivity extends Activity {
         childpic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bindobject = "crvschild";
+                entityid = ChildClient.entityId();
                 dispatchTakePictureIntent(childpic);
             }
         });
@@ -92,13 +98,13 @@ public class ChildDetailActivity extends Activity {
             childpic.setImageResource(R.drawable.child_boy_infant);
 //                newborn_or_fp.setVisibility(View.INVISIBLE);
         }
-        try {
+//        try {
             if (ChildClient.getDetails().get("profilepic") != null) {
                 ChildDetailActivity.setImagetoHolder(this, ChildClient.getDetails().get("profilepic"), childpic, R.drawable.child_boy_infant);
             }
-        }catch (Exception e){
-
-        }
+//        }catch (Exception e){
+//
+//        }
 
 
 
@@ -224,32 +230,26 @@ public class ChildDetailActivity extends Activity {
     public void saveimagereference(String bindobject,String entityid,Map<String,String> details){
         Context.getInstance().allCommonsRepositoryobjects(bindobject).mergeDetails(entityid,details);
 //                Elcoclient.entityId();
-//        Toast.makeText(this,entityid,Toast.LENGTH_LONG).show();
+        Toast.makeText(this,entityid, Toast.LENGTH_LONG).show();
     }
     public static void setImagetoHolder(Activity activity,String file, ImageView view, int placeholder){
+        String TAG = "ImageGridFragment";
+        String IMAGE_CACHE_DIR = "thumbs";
+
+        int mImageThumbSize;
+        int mImageThumbSpacing;
+
         mImageThumbSize = 300;
         mImageThumbSpacing = Context.getInstance().applicationContext().getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
 
-//        ImageCache.ImageCacheParams cacheParams =
-//                new ImageCache.ImageCacheParams(activity, IMAGE_CACHE_DIR);
-//             cacheParams.setMemCacheSizePercent(0.50f); // Set memory cache to 25% of app memory
-//        mImageFetcher = new ImageFetcher(activity, mImageThumbSize);
-//        mImageFetcher.setLoadingImage(placeholder);
-//        mImageFetcher.addImageCache(activity.getFragmentManager(), cacheParams);
-////        Toast.makeText(activity,file,Toast.LENGTH_LONG).show();
-//        mImageFetcher.loadImage("file:///"+file,view);
-
-//        Uri.parse(new File("/sdcard/cats.jpg")
-
-
-
-
-
-
-//        BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-//        Bitmap bitmap = BitmapFactory.decodeFile(file, options);
-//        view.setImageBitmap(bitmap);
+        ImageCache.ImageCacheParams cacheParams =
+                new ImageCache.ImageCacheParams(activity, IMAGE_CACHE_DIR);
+        cacheParams.setMemCacheSizePercent(0.80f); // Set memory cache to 25% of app memory
+        ImageFetcher mImageFetcher = new ImageFetcher(activity, mImageThumbSize);
+        mImageFetcher.setLoadingImage(placeholder);
+        mImageFetcher.addImageCache(activity.getFragmentManager(), cacheParams);
+//        Toast.makeText(activity,file,Toast.LENGTH_LONG).show();
+        mImageFetcher.loadImage("file:///"+file,view);
     }
 }

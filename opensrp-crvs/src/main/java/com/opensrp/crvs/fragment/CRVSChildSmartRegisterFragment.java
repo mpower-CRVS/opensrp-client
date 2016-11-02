@@ -160,13 +160,13 @@ public class CRVSChildSmartRegisterFragment extends SecuredNativeSmartRegisterCu
     }
 
     private String filterStringForFemale() {
-        return "and gender LIKE '%Female%'";
+        return "and details LIKE '%\"gender\":\"Female\"%'";
     }
     private String filterStringForMale() {
-        return "and gender LIKE '%Male%'";
+        return "and details LIKE '%\"gender\":\"Male\"%'";
     }
     private String filterStringForOther() {
-        return "and gender LIKE '%Transgender%'";
+        return "and details LIKE '%\"gender\":\"Transgender\"%'";
     }
 
 
